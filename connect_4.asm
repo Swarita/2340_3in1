@@ -368,7 +368,7 @@ player1Win:
 #Automatically goes to WinSound after plater1Win and plays happy tune. GameTie jumps to WinSound
 WinSound:
   li $a0, 72 		#play middle C
-  li $a1, 550  		# half second play
+  li $a1, 550  		# .55 second play
   move $a2, $t2
   li $a3, 120
   la $v0, 33
@@ -382,14 +382,14 @@ WinSound:
   syscall           
   
   li $a0, 79 		#play G
-  li $a1, 600  		# half second play
+  li $a1, 600  		# .6 second play
   move $a2, $t2
   li $a3, 120
   la $v0, 33
   syscall            
   
   li $a0, 84		#play C octave higher
-  li $a1, 600  		# half second play
+  li $a1, 600  		# .6 second play
   move $a2, $t2
   li $a3, 120
   la $v0, 33
@@ -399,7 +399,7 @@ WinSound:
  #PlayerWon jums to LoseSound to play a sad tune
 LoseSound:
   li $a0, 71 		#play B (key 71)
-  li $a1, 550  		# half second play
+  li $a1, 550  		# .55 second play
   move $a2, $t2
   li $a3, 120
   la $v0, 33
@@ -413,14 +413,14 @@ LoseSound:
   syscall           
   
   li $a0, 69 		#play A (key 69)
-  li $a1, 600  		# half second play
+  li $a1, 600  		# .6 second play
   move $a2, $t2
   li $a3, 120
   la $v0, 33
   syscall   
   
   li $a0, 68 		#play A flat (key 68)
-  li $a1, 600  		# half second play
+  li $a1, 600  		# .6 second play
   move $a2, $t2
   li $a3, 120
   la $v0, 33
