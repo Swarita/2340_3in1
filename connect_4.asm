@@ -46,7 +46,7 @@
 	la $a0, welcomeprompt		#print opening statement and gamespace
 	li $v0, 4
 	syscall
-	jal Print		
+	jal display		
 	
 turns:
 	human:
@@ -59,8 +59,8 @@ turns:
 			
 		la $a0, 1		#pass player num as argument then check for validity
 		jal storeturn		#store play if valid
-		jal Print		#print the gamespace
-		jal WinCheck		#check for a win
+		jal display		#print the gamespace
+		jal checkforwin		#check for a win
 
 	computer:
 		la $a0, cpuprompt	#alert that it's the computer's turn
@@ -84,8 +84,8 @@ turns:
 		la $a0, 2
 		
 		jal storeturn		#store play if valid
-		jal Print		#print the gamespace
-		jal WinCheck		#check for a win
+		jal display		#print the gamespace
+		jal checkforwin		#check for a win
 
 j turns					#begin next round after both players play
 
@@ -127,8 +127,8 @@ storeturn:
 		beq $a0, 1, human
 		beq $a0, 2, computer
 
-#Print subroutine prints the gamespace out
-Print:
+#display subroutine prints the gamespace out
+display:
 	addiu $sp, $sp, -8	#save stack
 	sw $v0, 4($sp)
 	sw $a0, ($sp)
@@ -178,8 +178,8 @@ Print:
 		addiu $sp, $sp, 8
 		jr $ra
 	
-#WinCheck subroutine checks for wins on the horizontal, vertical, and RL and LR diagonals. Takes input in v0
-WinCheck:
+#checkforwin subroutine checks for wins on the horizontal, vertical, and RL and LR diagonals. Takes input in v0
+checkforwin:
 	addiu $sp, $sp, -4		#save stack
 	sw $ra, ($sp)
 	
@@ -331,7 +331,7 @@ WinCheck:
 		li $t2, 0
 	
 	checkFilled:
-		lb $t1, ($t0)
+		lb $t1, ($t0)		
 		beqz $t1, tieEnd
 		addi $t0, $t0, 1
 		add $t2, $t2, 1
@@ -340,11 +340,11 @@ WinCheck:
 		j checkFilled
 	
 	tieEnd:
-		lw $ra, ($sp)			#restore stack then return to Round
+		lw $ra, ($sp)			#restore stack then return to turns
 		addiu $sp, $sp, 4
 		jr $ra
 	
-#Three end game possibilities, a tie, player 1 wins, or player 2 wins	
+#Three end game possibilities, a tie, human wins, or computer wins	
 GameTie:
 	la $a0, tietext				#game was a tie, display result
 	li $v0, 4
@@ -354,7 +354,7 @@ GameTie:
 PlayerWon:
 	beq $a0, 1, player1Win			#if player won, branch, else computer won
 	
-	la $a0, cpuwintext			#player 2 won, display result
+	la $a0, cpuwintext			#computer won
 	li $v0, 4
 	syscall
 	j LoseSound				#end program
@@ -377,7 +377,7 @@ WinSound:
  	li $a0, 76				#play E
  	li $a1, 500 				# half second play
  	move $a2, $t2
- 	li $a3, 120
+ 	li $a3, 120				#volume
  	la $v0, 33
  	syscall           
   
