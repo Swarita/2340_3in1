@@ -46,6 +46,7 @@
 	la $a0, welcomeprompt		#print opening statement and gamespace
 	li $v0, 4
 	syscall
+
 	jal display		
 	
 turns:
@@ -89,7 +90,6 @@ turns:
 
 j turns					#begin next round after both players play
 
-
 # storeturn subroutine, takes input in v0 and player num in a0
 storeturn:
 	addiu $v0, $v0, -4		#checks if input is within bounds, error if not
@@ -129,6 +129,7 @@ storeturn:
 
 #display subroutine prints the gamespace out
 display:
+
 	addiu $sp, $sp, -8	#save stack
 	sw $v0, 4($sp)
 	sw $a0, ($sp)
@@ -391,7 +392,7 @@ WinSound:
  	li $a0, 84				#play C octave higher
  	li $a1, 600  				# .6 second play
  	move $a2, $t2
-  	li $a3, 120				#volume
+  li $a3, 120				#volume
  	la $v0, 33
 	syscall 
  	j End   				#end program - skips sad sound if won 
