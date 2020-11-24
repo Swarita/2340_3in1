@@ -20,7 +20,7 @@
 	#		-If no one won/tied, display who's turn it is and have them keep playing
 
 .data
-	#2d array of a board
+	#1d array of a board
 	gamespace: .byte 0:18 # 6x3 game space
 	
 	#common game-place prompts
