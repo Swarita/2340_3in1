@@ -20,7 +20,7 @@
 	#		-If no one won/tied, display who's turn it is and have them keep playing
 
 .data
-	#2d array of a baord
+	#2d array of a board
 	gamespace: .byte 0:18 # 6x3 game space
 	
 	#common game-place prompts
@@ -139,7 +139,7 @@ Print:
 	
 	li $t0, 17 		#loop counter starting from end of gamespaceArray, also val of column 3
 	
-	#loop subroutine updates the baord with the new play
+	#loop subroutine updates the board with the new play
 	loop:
 		sub $t2, $t0, 2			#store column 1 in t2
 		sub $t1, $t0, 1			#store column 2 in t1
@@ -396,7 +396,7 @@ WinSound:
   syscall 
   j End   		#end program - skips sad sound if won 
  
- #PlayerWon jums to LoseSound to play a sad tune
+ #PlayerWon jumps to LoseSound to play a sad tune
 LoseSound:
   li $a0, 71 		#play B (key 71)
   li $a1, 550  		# .55 second play
