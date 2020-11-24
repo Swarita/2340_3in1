@@ -202,7 +202,7 @@ checkforwin:
 		bne $t1, $a0, checkRight
 		addiu $t9, $t9, 1
 		addiu $t2, $t2, -1
-		bgt $t9, 2, PlayerWon
+		bgt $t9, 2, winningoutcome
 		
 		j checkLeft
 	
@@ -217,7 +217,7 @@ checkforwin:
 		bne $t1, $a0, horzEnd
 		addiu $t9, $t9, 1
 		addiu $t4, $t4, 1
-		bgt $t9, 2, PlayerWon
+		bgt $t9, 2, winningoutcome
 		
 		j checkRight
 	
@@ -235,24 +235,24 @@ checkforwin:
 		bne $t1, $a0, checkBottom
 		addiu $t9, $t9, 1
 		addiu $t2, $t2, 3
-		bgt $t9, 2, PlayerWon
+		bgt $t9, 2, winningoutcome
 		
 		j checkTop
 	
 	checkBottom:
 		la $t0, gamespace($t4)
 
-		bltu $t4, 3, vertEnd		#if at bottom, then end
+		bltu $t4, 3, verticalcheck		#if at bottom, then end
 		
 		lb $t1, -3($t0)			#else check below
-		bne $t1, $a0, vertEnd
+		bne $t1, $a0, verticalcheck
 		addiu $t9, $t9, 1
 		addiu $t4, $t4, -3
-		bgt $t9, 2, PlayerWon
+		bgt $t9, 2, winningoutcome
 		
 		j checkBottom
 	
-	vertEnd:
+	verticalcheck:
 		li $t9, 1			#diagonal from right to left
 		move $t2, $v0
 		move $t4, $v0
@@ -260,73 +260,73 @@ checkforwin:
 	checkTopR:
 		la $t0, gamespace($t2)
 		
-		bgtu $t2, 14, checkBotL		#if at top right corner, then start checking bottom right
+		bgtu $t2, 14, bottomleftcheck		#if at top right corner, then start checking bottom right
 		div $t2, $t8
 		mfhi $t3
-		beq $t3, 2, checkBotL
+		beq $t3, 2, bottomleftcheck
 		
 		lb $t1, 4($t0)			#else move up one and right one
-		bne $t1, $a0, checkBotL
+		bne $t1, $a0, bottomleftcheck
 		addiu $t9, $t9, 1
 		addiu $t2, $t2, 4
-		bgt $t9, 2, PlayerWon
+		bgt $t9, 2, winningoutcome
 		
 		j checkTopR
 	
-	checkBotL:
+	bottomleftcheck:
 		la $t0, gamespace($t4)
 		
-		bltu $t4, 3, diagRLEnd		#if at bottom left corner, then end
+		bltu $t4, 3, ltordiagonalcheck		#if at bottom left corner, then end
 		div $t4, $t8
 		mfhi $t3
-		beq $t3, 0, diagRLEnd
+		beq $t3, 0, ltordiagonalcheck
 		
 		lb $t1, -4($t0)			#else check down one and left one
-		bne $t1, $a0, diagRLEnd
+		bne $t1, $a0, ltordiagonalcheck
 		addiu $t9, $t9, 1
 		addiu $t4, $t4, -4
-		bgt $t9, 2, PlayerWon
+		bgt $t9, 2, winningoutcome
 		
-		j checkBotL
+		j bottomleftcheck
 	
-	diagRLEnd:
+	ltordiagonalcheck:
 		li $t9, 1			#diagonal from left to right
 		move $t2, $v0
 		move $t4, $v0
 	
-	checkTopL:
+	topleftcheck:
 		la $t0, gamespace($t2)
 		
-		bgtu $t2, 14, checkBotR		#if at top left corner, then start checking bottom right
+		bgtu $t2, 14, bottomrightcheck		#if at top left corner, then start checking bottom right
 		div $t2, $t8
 		mfhi $t3
-		beq $t3, 0, checkBotR
+		beq $t3, 0, bottomrightcheck
 		
 		lb $t1, 2($t0)			#else look above one and left one
-		bne $t1, $a0, checkBotR
+		bne $t1, $a0, bottomrightcheck
 		addiu $t9, $t9, 1
 		addiu $t2, $t2, 2
-		bgt $t9, 2, PlayerWon
+		bgt $t9, 2, winningoutcome
 		
-		j checkTopL
+		j topleftcheck
 	
-	checkBotR:
+	bottomrightcheck:
 		la $t0, gamespace($t4)
 		
-		bltu $t4, 3, diagLREnd		#if at bottom right corner, then end
+		bltu $t4, 3, lefttorightdiagonal		#if at bottom right corner, then end
 		div $t4, $t8
 		mfhi $t3
-		beq $t3, 2, diagLREnd
+		beq $t3, 2, lefttorightdiagonal
 		
 		lb $t1, -2($t0)			#else look below one and right one
-		bne $t1, $a0, diagLREnd
+		bne $t1, $a0, lefttorightdiagonal
 		addiu $t9, $t9, 1
 		addiu $t4, $t4, -2
-		bgt $t9, 2, PlayerWon
+		bgt $t9, 2, winningoutcome
 		
-		j checkBotR
+		j bottomrightcheck
 	
-	diagLREnd:
+	lefttorightdiagonal:
 		li $t9, 15			#tie
 		la $t0, gamespace($t9)
 		li $t2, 0
@@ -336,7 +336,7 @@ checkforwin:
 		beqz $t1, tieEnd
 		addi $t0, $t0, 1
 		add $t2, $t2, 1
-		beq $t2, 3, GameTie
+		beq $t2, 3, tiegame
 		
 		j checkFilled
 	
@@ -346,27 +346,27 @@ checkforwin:
 		jr $ra
 	
 #Three end game possibilities, a tie, human wins, or computer wins	
-GameTie:
+tiegame:
 	la $a0, tietext				#game was a tie, display result
 	li $v0, 4
 	syscall
 	j WinSound
 	
-PlayerWon:
-	beq $a0, 1, player1Win			#if player won, branch, else computer won
+winningoutcome:
+	beq $a0, 1, humanWin			#if player won, branch, else computer won
 	
 	la $a0, cpuwintext			#computer won
 	li $v0, 4
 	syscall
 	j LoseSound				#end program
 	
-player1Win:
+humanWin:
 	
-	la $a0, humanwintext			#player 1 won, display result
+	la $a0, humanwintext			#human won, display result
 	li $v0, 4
 	syscall
 
-#Automatically goes to WinSound after plater1Win and plays happy tune. GameTie jumps to WinSound
+#Automatically goes to WinSound after humanwin and plays happy tune. tiegame jumps to WinSound
 WinSound:
  	li $a0, 72 				#play middle C
  	li $a1, 550  				# .55 second play
@@ -397,7 +397,7 @@ WinSound:
 	syscall 
  	j End   				#end program - skips sad sound if won 
  
-#PlayerWon jumps to LoseSound to play a sad tune
+#winningoutcome jumps to LoseSound to play a sad tune
 LoseSound:
   	li $a0, 71 				#play B (key 71)
  	li $a1, 550  				# .55 second play
