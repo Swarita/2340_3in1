@@ -15,7 +15,7 @@
 	la $a0, welcomeprompt		#print opening statement and gamespace
 	li $v0, 4
 	syscall
-	jal Print
+	jal display
 	
 	turns:
 		human:
@@ -26,8 +26,8 @@
 			syscall
 			la $a0, 1			#pass player num as argument then check for validity
 			jal storeturn			#store play if valid
-			jal Print			#print the gamespace
-			jal WinCheck			#check for a win
+			jal display			#print the gamespace
+			jal checkforwin			#check for a win
 	
 		computer:
 			la $a0, cpuprompt		#alert that it's the computer's turn
@@ -46,10 +46,10 @@
 			move $v0, $t0			#pass play and player num as arguments
 			la $a0, 2
 			jal storeturn
-			jal Print
-			jal WinCheck
+			jal display
+			jal checkforwin
 	
-	j turns					#begin next round after both players play
+	j turns					#begin next turns after both players play
 
 
 # storeturn subroutine, takes input in v0 and player num in a0
@@ -87,8 +87,8 @@ storeturn:
 		beq $a0, 1, human
 		beq $a0, 2, computer
 
-#Print subroutine prints the gamespace out
-Print:
+#display subroutine prints the gamespace out
+display:
 	addiu $sp, $sp, -8		#save stack
 	sw $v0, 4($sp)
 	sw $a0, ($sp)
@@ -129,8 +129,8 @@ Print:
 	addiu $sp, $sp, 8
 	jr $ra
 	
-#WinCheck subroutine checks for wins on the horizontal, vertical, and RL and LR diagonals. Takes input in v0
-WinCheck:
+#checkforwin subroutine checks for wins on the horizontal, vertical, and RL and LR diagonals. Takes input in v0
+checkforwin:
 	addiu $sp, $sp, -4		#save stack
 	sw $ra, ($sp)
 	
@@ -291,11 +291,11 @@ WinCheck:
 	
 	tieEnd:
 	
-	lw $ra, ($sp)			#restore stack then return to Round
+	lw $ra, ($sp)			#restore stack then return to turns
 	addiu $sp, $sp, 4
 	jr $ra
 	
-#Three end game possibilities, a tie, player 1 wins, or player 2 wins
+#Three end game possibilities, a tie, human wins, or computer wins
 	
 GameTie:
 	la $a0, tietext
@@ -306,7 +306,7 @@ GameTie:
 PlayerWon:
 	beq $a0, 1, player1Win
 	
-	#player 2 won
+	#computer won
 	la $a0, cpuwintext
 	li $v0, 4
 	syscall
