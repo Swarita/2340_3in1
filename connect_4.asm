@@ -16,7 +16,7 @@
 	# After each turn:
 	#	-Update gameboard with new pieces and print
 	#	-Check if either player or computer won or if they tied
-	#		-If won/tied, display results and end program
+	#		-If won/tied, display results and ends the program
 	#		-If no one won/tied, display who's turn it is and have them keep playing
 
 .data
@@ -346,86 +346,86 @@ WinCheck:
 	
 #Three end game possibilities, a tie, player 1 wins, or player 2 wins	
 GameTie:
-	la $a0, tietext			#game was a tie, display result
+	la $a0, tietext				#game was a tie, display result
 	li $v0, 4
 	syscall
 	j WinSound
 	
 PlayerWon:
-	beq $a0, 1, player1Win		#if player won, branch, else computer won
+	beq $a0, 1, player1Win			#if player won, branch, else computer won
 	
-	la $a0, cpuwintext		#player 2 won, display result
+	la $a0, cpuwintext			#player 2 won, display result
 	li $v0, 4
 	syscall
 	j LoseSound				#end program
 	
 player1Win:
 	
-	la $a0, humanwintext		#player 1 won, display result
+	la $a0, humanwintext			#player 1 won, display result
 	li $v0, 4
 	syscall
 
 #Automatically goes to WinSound after plater1Win and plays happy tune. GameTie jumps to WinSound
 WinSound:
-  li $a0, 72 		#play middle C
-  li $a1, 550  		# .55 second play
-  move $a2, $t2
-  li $a3, 120
-  la $v0, 33
-  syscall             
+ 	li $a0, 72 				#play middle C
+ 	li $a1, 550  				# .55 second play
+ 	move $a2, $t2
+ 	li $a3, 120				#volume
+ 	la $v0, 33
+ 	syscall             
   
-  li $a0, 76		#play E
-  li $a1, 500 		# half second play
-  move $a2, $t2
-  li $a3, 120
-  la $v0, 33
-  syscall           
+ 	li $a0, 76				#play E
+ 	li $a1, 500 				# half second play
+ 	move $a2, $t2
+ 	li $a3, 120
+ 	la $v0, 33
+ 	syscall           
   
-  li $a0, 79 		#play G
-  li $a1, 600  		# .6 second play
-  move $a2, $t2
-  li $a3, 120
-  la $v0, 33
-  syscall            
+ 	li $a0, 79 				#play G
+ 	li $a1, 600  				# .6 second play
+ 	move $a2, $t2
+ 	li $a3, 120				#volume
+ 	la $v0, 33
+ 	syscall            
   
-  li $a0, 84		#play C octave higher
-  li $a1, 600  		# .6 second play
-  move $a2, $t2
-  li $a3, 120
-  la $v0, 33
-  syscall 
-  j End   		#end program - skips sad sound if won 
+ 	li $a0, 84				#play C octave higher
+ 	li $a1, 600  				# .6 second play
+ 	move $a2, $t2
+  	li $a3, 120				#volume
+ 	la $v0, 33
+	syscall 
+ 	j End   				#end program - skips sad sound if won 
  
- #PlayerWon jumps to LoseSound to play a sad tune
+#PlayerWon jumps to LoseSound to play a sad tune
 LoseSound:
-  li $a0, 71 		#play B (key 71)
-  li $a1, 550  		# .55 second play
-  move $a2, $t2
-  li $a3, 120
-  la $v0, 33
-  syscall             
+  	li $a0, 71 				#play B (key 71)
+ 	li $a1, 550  				# .55 second play
+  	move $a2, $t2
+  	li $a3, 120				#volume
+  	la $v0, 33
+  	syscall             
   
-  li $a0, 70		#play B flat (key 70)
-  li $a1, 500 		# half second play
-  move $a2, $t2
-  li $a3, 120
-  la $v0, 33
-  syscall           
+  	li $a0, 70				#play B flat (key 70)
+  	li $a1, 500 				# half second play
+  	move $a2, $t2
+  	li $a3, 120				#volume
+  	la $v0, 33
+  	syscall           
   
-  li $a0, 69 		#play A (key 69)
-  li $a1, 600  		# .6 second play
-  move $a2, $t2
-  li $a3, 120
-  la $v0, 33
-  syscall   
+  	li $a0, 69 				#play A (key 69)
+  	li $a1, 600  				# .6 second play
+  	move $a2, $t2
+  	li $a3, 120				#volume
+  	la $v0, 33
+  	syscall   
   
-  li $a0, 68 		#play A flat (key 68)
-  li $a1, 600  		# .6 second play
-  move $a2, $t2
-  li $a3, 120
-  la $v0, 33
-  syscall         
+  	li $a0, 68 				#play A flat (key 68)
+  	li $a1, 600  				# .6 second play
+  	move $a2, $t2
+  	li $a3, 120				#volume
+  	la $v0, 33
+  	syscall         
 	
 End:
-	li $v0, 10			#end program
+	li $v0, 10				#end program
 	syscall
